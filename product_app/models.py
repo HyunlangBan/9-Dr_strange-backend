@@ -1,6 +1,6 @@
 from django.db import models
 
-class Menus(models.Model):
+class Menu(models.Model):
     name = models.CharField(max_length = 100)
     
     def __str__(self):
@@ -10,9 +10,9 @@ class Menus(models.Model):
         db_table = 'menus'
     
 
-class Categories(models.Model):
+class Category(models.Model):
     name  = models.CharField(max_length = 100)
-    menus = models.ForeignKey(Menus, on_delete = models.CASCADE)
+    menus = models.ForeignKey(Menu, on_delete = models.CASCADE)
     
     def __str__(self):
         return f'name: {self.name}, menus: {menus}'
@@ -20,17 +20,17 @@ class Categories(models.Model):
         db_table = 'categories'
 
 
-class SubCategories(models.Model):
+class SubCategory(models.Model):
     name       = models.CharField(max_length = 100)
-    categories = models.ForeignKey(Categories, on_delete = models.CASCADE)
+    categories = models.ForeignKey(Category, on_delete = models.CASCADE)
     
     def __str__(self):
         return f'name: {self.name}, categories: {self.categories}'
     class Meta:
-        db_table = 'subcategories'
+        db_table = 'sub_categories'
 
 
-class Sizes(models.Model):
+class Size(models.Model):
     name = models.IntegerField(default = 0, unique = True)
     
     def __str__(self):
@@ -40,7 +40,7 @@ class Sizes(models.Model):
         db_table = 'sizes'
 
 
-class Materials(models.Model):
+class Material(models.Model):
     name = models.CharField(max_length = 100, unique = True)
 
     def __str__(self):
@@ -50,19 +50,19 @@ class Materials(models.Model):
         db_table = 'materials'
 
 
-class Countries(models.Model):
+class Country(models.Model):
     name = models.CharField(max_length = 100, unique = True)
 
     class Meta:
         db_table = 'countries'
 
 
-class Products(models.Model):
-    name           = models.CharField(max_length                = 200, unique     = True)
+class Product(models.Model):
+    name           = models.CharField(max_length = 200, unique = True)
     price          = models.IntegerField()
-    materials      = models.ForeignKey(Materials, on_delete     = models.CASCADE)
-    countries      = models.ForeignKey(Countries, on_delete     = models.CASCADE)
-    sub_categories = models.ForeignKey(SubCategories, on_delete = models.CASCADE)
+    materials      = models.ForeignKey(Material, on_delete = models.CASCADE)
+    countries      = models.ForeignKey(Country, on_delete = models.CASCADE)
+    sub_categories = models.ForeignKey(SubCategory, on_delete = models.CASCADE)
     
     def __str__(self):
         return f'name: {self.name}, price: {self.price}'
@@ -71,9 +71,9 @@ class Products(models.Model):
         db_table = 'products'
 
 
-class Colors(models.Model):
-    name     = models.CharField(max_length              = 100, unique        = True)
-    products = models.ManyToManyField(Products, through = 'ProductsWColors')
+class Color(models.Model):
+    name     = models.CharField(max_length = 100, unique = True)
+    products = models.ManyToManyField(Product, through = 'ProductWColor')
 
     class Meta:
         db_table = 'colors'
@@ -82,33 +82,30 @@ class Colors(models.Model):
         return self.name
 
 
-class ProductsWColors(models.Model):
-    colors         = models.ForeignKey(Colors, on_delete   = models.CASCADE)
-    products       = models.ForeignKey(Products, on_delete = models.CASCADE)
-    like           = models.IntegerField(default           = 0)
-    product_number = models.IntegerField(unique            = True)
+class ProductWColor(models.Model):
+    colors         = models.ForeignKey(Color, on_delete = models.CASCADE)
+    products       = models.ForeignKey(Product, on_delete = models.CASCADE)
+    like           = models.IntegerField(default = 0)
+    product_number = models.IntegerField(unique = True)
 
     class Meta:
         db_table = 'productswcolors'
         
         
-class ProductSizes(models.Model):
-    products_w_colors = models.ManyToManyField(ProductsWColors)
-    sizes             = models.ForeignKey(Sizes, on_delete = models.CASCADE)
+class ProductSize(models.Model):
+    products_w_colors = models.ManyToManyField(ProductWColor)
+    sizes             = models.ForeignKey(Size, on_delete = models.CASCADE)
 
     class Meta:
         db_table = 'product_sizes'
 
 
-class Images(models.Model):
+class Image(models.Model):
     image_url           = models.CharField(max_length = 1000)
-    products_w_colors = models.ForeignKey(ProductsWColors, on_delete = models.CASCADE)
+    products_w_colors = models.ForeignKey(ProductWColor, on_delete = models.CASCADE)
     
     def __self__(self):
         return self.image_url
 
     class Meta:
         db_table = 'images'
-
-
-
