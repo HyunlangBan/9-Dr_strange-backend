@@ -22,7 +22,7 @@ class Categories(models.Model):
 
 class SubCategories(models.Model):
     name       = models.CharField(max_length = 100)
-    categories = models.ForeignKey(Categories, on_delete = models.CASCADE, null = True)
+    categories = models.ForeignKey(Categories, on_delete = models.CASCADE)
     
     def __str__(self):
         return f'name: {self.name}, categories: {self.categories}'
@@ -101,11 +101,11 @@ class ProductSizes(models.Model):
 
 
 class Images(models.Model):
-    img_url           = models.CharField(max_length = 1000)
+    image_url           = models.CharField(max_length = 1000)
     products_w_colors = models.ForeignKey(ProductsWColors, on_delete = models.CASCADE)
     
     def __self__(self):
-        return self.img_url
+        return self.image_url
 
     class Meta:
         db_table = 'images'
