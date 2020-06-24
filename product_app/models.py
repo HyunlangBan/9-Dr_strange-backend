@@ -9,20 +9,27 @@ class Menu(models.Model):
     class Meta:
         db_table = 'menus'
     
+class MenuCategory(models.Model):
+    menus      = models.ForeignKey(Menu, on_delete = models.CASCADE)
+    categories = models.ForeignKey('Category', on_delete = models.CASCADE)
 
 class Category(models.Model):
     name  = models.CharField(max_length = 100)
-    menus = models.ForeignKey(Menu, on_delete = models.CASCADE)
+    menus = models.ManyToManyField(Menu, through = 'MenuCategory')
     
     def __str__(self):
         return f'name: {self.name}, menus: {menus}'
     class Meta:
         db_table = 'categories'
 
+class CategorySubcategory(models.Model):
+    categories     = models.ForeignKey(Category, on_delete = models.CASCADE)
+    sub_categoreis = models.ForeignKey('SubCategory', on_delete = models.CASCADE)
 
 class SubCategory(models.Model):
-    name       = models.CharField(max_length = 100)
-    categories = models.ForeignKey(Category, on_delete = models.CASCADE)
+    name         = models.CharField(max_length = 100)
+    descriptions = models.CharField(max_length = 1000)
+    categories   = models.ManyToManyField(Category, through = 'CategorySubcategory')
     
     def __str__(self):
         return f'name: {self.name}, categories: {self.categories}'
@@ -31,7 +38,7 @@ class SubCategory(models.Model):
 
 
 class Size(models.Model):
-    name = models.IntegerField(default = 0, unique = True)
+    name = models.CharField(max_length=20, default = 0, unique = True)
     
     def __str__(self):
         return self.name
@@ -73,7 +80,7 @@ class Product(models.Model):
 
 class Color(models.Model):
     name     = models.CharField(max_length = 100, unique = True)
-    products = models.ManyToManyField(Product, through = 'ProductWColor')
+    products = models.ManyToManyField(Product, through = 'ProductColor')
 
     class Meta:
         db_table = 'colors'
@@ -82,18 +89,26 @@ class Color(models.Model):
         return self.name
 
 
-class ProductWColor(models.Model):
+class ProductColor(models.Model):
     colors         = models.ForeignKey(Color, on_delete = models.CASCADE)
     products       = models.ForeignKey(Product, on_delete = models.CASCADE)
-    like           = models.IntegerField(default = 0)
     product_number = models.IntegerField(unique = True)
+    # user           = models.ManyToManyField(User, through='Review')
 
     class Meta:
-        db_table = 'productswcolors'
-        
-        
+        db_table = 'products_colors'
+
+
+class Reveiw(models.Model):
+    # user            = models.ForeignKey(User, on_delete = models.CASCADE)
+    products_colosr = models.ForeignKey(ProductColor, on_delete = models.CASCADE)
+    title           = models.CharField(max_length=100)
+    contents        = models.CharField(max_length=1000)
+    image_url       = models.CharField(max_length=1000)
+
+
 class ProductSize(models.Model):
-    products_w_colors = models.ManyToManyField(ProductWColor)
+    products_colors   = models.ManyToManyField(ProductColor)
     sizes             = models.ForeignKey(Size, on_delete = models.CASCADE)
 
     class Meta:
@@ -102,10 +117,32 @@ class ProductSize(models.Model):
 
 class Image(models.Model):
     image_url           = models.CharField(max_length = 1000)
-    products_w_colors = models.ForeignKey(ProductWColor, on_delete = models.CASCADE)
+    products_colors     = models.ForeignKey(ProductColor, on_delete = models.CASCADE)
     
     def __self__(self):
         return self.image_url
 
     class Meta:
         db_table = 'images'
+
+
+class ListThumnail(models.Model):
+    image_url       = models.CharField(max_length=1000)
+    products_colors = models.ForeignKey(ProductColor, on_delete = models.CASCADE)
+
+
+class ProductcolorProductthumnail(models.Model):
+    products_colors   = models.ForeignKey(ProductColor, on_delete = models.CASCADE)
+    product_thumnails = models.ForeignKey('ProductThumnail', on_delete = models.CASCADE)
+
+
+class ProductThumnail(models.Model):
+    image_url = models.CharField(max_length=1000)
+
+
+class Review(models.Model):
+    # user = models.ForeignKey(User, on_delete = models.CASCADE)
+    products_colors = models.ForeignKey(ProductColor, on_delete = models.CASCADE)
+    title = models.CharField(max_length=100)
+    contents = models.CharField(max_length=1000)
+    image_url = models.CharField(max_length=1000, null = True)
