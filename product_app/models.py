@@ -148,3 +148,4 @@ class Reveiw(models.Model):
     
     class Meta:
         db_table = 'reviews'
+
