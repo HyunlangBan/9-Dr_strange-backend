@@ -1,16 +1,16 @@
 from django.db import models
-# from product_app.models import ProductColor
+from product_app.models import ProductColor
 
 class User(models.Model):
     name         = models.CharField(max_length = 100)
     nickname     = models.CharField(max_length = 100)
     password     = models.CharField(max_length = 300)
     birthday     = models.DateField()
-    email        = models.EmailField(max_length = 100)
+    email        = models.EmailField(max_length = 100, unique = True)
     phone_number = models.CharField(max_length = 30)
 
     def __str__(self):
-        return f'name: {self.name}, nickname: {self.nickname}, password: {self.password}, birthday: {self.birthday}, email: {self.email}, phone_number: {self.phone_number}'
+        return self.name
 
     class Meta:
         db_table = 'users'
