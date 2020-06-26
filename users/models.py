@@ -24,4 +24,4 @@ class UserProductColor(models.Model):
         return self.like
 
     class Meta:
-        db_table = 'users_productcolors'
+        db_table = 'users_product_colors'
