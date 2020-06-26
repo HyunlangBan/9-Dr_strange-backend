@@ -1,4 +1,4 @@
-from django.db import models
+from django.db   import models
 
 class Menu(models.Model):
     name = models.CharField(max_length = 100)
@@ -96,10 +96,10 @@ class ProductColor(models.Model):
     color          = models.ForeignKey('Color', on_delete = models.SET_NULL, null = True)
     product        = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
     product_number = models.IntegerField(unique = True)
-    # user           = models.ManyToManyField('User', through='Review')
+    user           = models.ManyToManyField('users.User', through='Review')
 
     class Meta:
-        db_table = 'products_colors'
+        db_table = 'product_colors'
 
 class ProductColorSize(models.Model):
     product_color    = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
@@ -119,28 +119,28 @@ class Image(models.Model):
     class Meta:
         db_table = 'images'
 
-class ListThumnail(models.Model):
+class ListThumbnail(models.Model):
     image_url     = models.CharField(max_length = 1000)
     product_color = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
     
     class Meta:
-        db_table = 'list_thumnails'
+        db_table = 'list_thumbnails'
 
-class ProductcolorProductthumnail(models.Model):
+class ProductColorProductThumbnail(models.Model):
     product_color    = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
-    product_thumnail = models.ForeignKey('ProductThumnail', on_delete = models.SET_NULL, null = True)
+    product_thumbnail = models.ForeignKey('ProductThumbnail', on_delete = models.SET_NULL, null = True)
 
     class Meta:
-        db_table = 'productcolor_productthumnail'
+        db_table = 'product_colors_product_thumbnails'
         
-class ProductThumnail(models.Model):
+class ProductThumbnail(models.Model):
     image_url = models.CharField(max_length=1000)
 
     class Meta:
-        db_table = 'product_thumnails'
+        db_table = 'product_thumbnails'
 
 class Reveiw(models.Model):
-    # user            = models.ForeignKey(User, on_delete = models.CASCADE)
+    user            = models.ForeignKey('users.User', on_delete = models.CASCADE)
     product_color = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
     title         = models.CharField(max_length=100)
     content       = models.CharField(max_length=1000)
@@ -148,4 +148,3 @@ class Reveiw(models.Model):
     
     class Meta:
         db_table = 'reviews'
-
