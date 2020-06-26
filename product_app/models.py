@@ -139,7 +139,7 @@ class DetailThumbnail(models.Model):
     class Meta:
         db_table = 'detail_thumbnails'
 
-class Reveiw(models.Model):
+class Review(models.Model):
     user          = models.ForeignKey('users.User', on_delete = models.CASCADE)
     product_color = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
     title         = models.CharField(max_length=100)
