@@ -1,5 +1,4 @@
 from django.db import models
-from product_app.models import ProductColor
 
 class User(models.Model):
     name         = models.CharField(max_length = 100)
@@ -18,7 +17,7 @@ class User(models.Model):
 class UserProductColor(models.Model):
     like          = models.IntegerField()
     user          = models.ForeignKey('User', on_delete = models.CASCADE)
-    product_color = models.ForeignKey('ProductColor', on_delete = models.CASCADE)
+    product_color = models.ForeignKey('product_app.ProductColor', on_delete = models.CASCADE)
 
     def __str__(self):
         return self.like
