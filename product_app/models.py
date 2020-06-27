@@ -110,7 +110,7 @@ class ProductColorSize(models.Model):
         db_table = 'product_sizes'
 
 class DetailImage(models.Model):
-    image_url       = models.CharField(max_length = 1000)
+    image_url       = models.URLField(max_length = 2000)
     product_color   = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
     
     def __self__(self):
@@ -120,7 +120,7 @@ class DetailImage(models.Model):
         db_table = 'detail_images'
 
 class ProductImage(models.Model):
-    image_url     = models.CharField(max_length = 1000)
+    image_url     = models.URLField(max_length = 2000)
     product_color = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
     
     class Meta:
@@ -134,7 +134,7 @@ class ProductColorDetailThumbnail(models.Model):
         db_table = 'product_colors_detail_thumbnails'
         
 class DetailThumbnail(models.Model):
-    image_url = models.CharField(max_length=1000)
+    image_url = models.URLField(max_length=2000)
 
     class Meta:
         db_table = 'detail_thumbnails'
@@ -144,7 +144,7 @@ class Review(models.Model):
     product_color = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
     title         = models.CharField(max_length=100)
     content       = models.CharField(max_length=1000)
-    image_url     = models.CharField(max_length=1000)
+    image_url     = models.URLField(max_length=1000)
     
     class Meta:
         db_table = 'reviews'
