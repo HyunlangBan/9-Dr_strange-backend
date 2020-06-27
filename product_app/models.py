@@ -26,16 +26,9 @@ class Category(models.Model):
     class Meta:
         db_table = 'categories'
 
-class CategorySubcategory(models.Model):
-    category     = models.ForeignKey('Category', on_delete = models.SET_NULL, null = True)
-    sub_category = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
-
-    class Meta:
-        db_table = 'cateogries_subcategories'
-
 class SubCategory(models.Model):
     name        = models.CharField(max_length = 100)
-    category    = models.ManyToManyField('Category', through = 'CategorySubcategory')
+    category    = models.ForeignKey('Category', on_delete = models.SET_NULL, null = True)
     
     def __str__(self):
         return f'name: {self.name}, categories: {self.category}'
