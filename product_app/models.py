@@ -35,7 +35,6 @@ class CategorySubcategory(models.Model):
 
 class SubCategory(models.Model):
     name        = models.CharField(max_length = 100)
-    description = models.CharField(max_length = 1000)
     category    = models.ManyToManyField('Category', through = 'CategorySubcategory')
     
     def __str__(self):
