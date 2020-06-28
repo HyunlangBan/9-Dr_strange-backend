@@ -2,8 +2,8 @@ from django.db  import models
  
 class Order(models.Model):
     user           = models.ForeignKey('users.User', on_delete = models.CASCADE)
-    total_price    = models.DecimalField(max_digits = 12, decimal_places = 2)
-    final_price    = models.DecimalField(max_digits = 12, decimal_places = 2)
+    total_price    = models.DecimalField(max_digits = 12, decimal_places = 0)
+    final_price    = models.DecimalField(max_digits = 12, decimal_places = 0)
     product_color  = models.ManyToManyField('product_app.ProductColor', through = 'Cart')
     
     def __str__(self):
