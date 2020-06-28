@@ -36,6 +36,12 @@ class SubCategory(models.Model):
     class Meta:
         db_table = 'sub_categories'
 
+class SubCategoryProduct(models.Model):
+    subcategory = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
+    product = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
+    class Meta:
+        db_table = 'sub_category_products'
+
 class Size(models.Model):
     name            = models.CharField(max_length=20, default = 0, unique = True)
     product_color   = models.ManyToManyField('ProductColor', through = 'ProductColorSize')
@@ -66,7 +72,7 @@ class Product(models.Model):
     price          = models.DecimalField(max_digits = 12, decimal_places = 0)
     material       = models.ForeignKey('Material', on_delete = models.SET_NULL, null = True)
     country        = models.ForeignKey('Country', on_delete = models.SET_NULL, null = True)
-    sub_category   = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
+    sub_category   = models.ManyToManyField('SubCategory', through = 'SubCategoryProduct')
     
     def __str__(self):
         return f'name: {self.name}, price: {self.price}'
@@ -89,6 +95,7 @@ class ProductColor(models.Model):
     product        = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
     product_number = models.IntegerField(unique = True)
     user           = models.ManyToManyField('users.User', through='Review')
+    discount_price = models.DecimalField(max_digits = 12, decimal_places = 2, null = True, blank = True)
 
     class Meta:
         db_table = 'product_colors'
