@@ -26,23 +26,22 @@ class Category(models.Model):
     class Meta:
         db_table = 'categories'
 
-class CategorySubcategory(models.Model):
-    category     = models.ForeignKey('Category', on_delete = models.SET_NULL, null = True)
-    sub_category = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
-
-    class Meta:
-        db_table = 'cateogries_subcategories'
-
 class SubCategory(models.Model):
     name        = models.CharField(max_length = 100)
-    description = models.CharField(max_length = 1000)
-    category    = models.ManyToManyField('Category', through = 'CategorySubcategory')
+    category    = models.ForeignKey('Category', on_delete = models.SET_NULL, null = True)
     
     def __str__(self):
         return f'name: {self.name}, categories: {self.category}'
 
     class Meta:
         db_table = 'sub_categories'
+
+class SubCategoryProduct(models.Model):
+    subcategory = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
+    product = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
+
+    class Meta:
+        db_table = 'sub_category_products'
 
 class Size(models.Model):
     name            = models.CharField(max_length=20, default = 0, unique = True)
@@ -74,7 +73,7 @@ class Product(models.Model):
     price          = models.DecimalField(max_digits = 12, decimal_places = 0)
     material       = models.ForeignKey('Material', on_delete = models.SET_NULL, null = True)
     country        = models.ForeignKey('Country', on_delete = models.SET_NULL, null = True)
-    sub_category   = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
+    sub_category   = models.ManyToManyField('SubCategory', through = 'SubCategoryProduct')
     
     def __str__(self):
         return f'name: {self.name}, price: {self.price}'
@@ -96,10 +95,11 @@ class ProductColor(models.Model):
     color          = models.ForeignKey('Color', on_delete = models.SET_NULL, null = True)
     product        = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
     product_number = models.IntegerField(unique = True)
-    # user           = models.ManyToManyField('User', through='Review')
+    user           = models.ManyToManyField('users.User', through='Review')
+    discount_price = models.DecimalField(max_digits = 12, decimal_places = 2, null = True, blank = True)
 
     class Meta:
-        db_table = 'products_colors'
+        db_table = 'product_colors'
 
 class ProductColorSize(models.Model):
     product_color    = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
@@ -109,43 +109,42 @@ class ProductColorSize(models.Model):
     class Meta:
         db_table = 'product_sizes'
 
-class Image(models.Model):
-    image_url       = models.CharField(max_length = 1000)
+class DetailImage(models.Model):
+    image_url       = models.URLField(max_length = 2000)
     product_color   = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
     
     def __self__(self):
         return self.image_url
 
     class Meta:
-        db_table = 'images'
+        db_table = 'detail_images'
 
-class ListThumnail(models.Model):
-    image_url     = models.CharField(max_length = 1000)
+class ProductImage(models.Model):
+    image_url     = models.URLField(max_length = 2000)
     product_color = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
     
     class Meta:
-        db_table = 'list_thumnails'
+        db_table = 'product_images'
 
-class ProductcolorProductthumnail(models.Model):
+class ProductColorDetailThumbnail(models.Model):
     product_color    = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
-    product_thumnail = models.ForeignKey('ProductThumnail', on_delete = models.SET_NULL, null = True)
+    detail_thumbnail = models.ForeignKey('DetailThumbnail', on_delete = models.SET_NULL, null = True)
 
     class Meta:
-        db_table = 'productcolor_productthumnail'
+        db_table = 'product_colors_detail_thumbnails'
         
-class ProductThumnail(models.Model):
-    image_url = models.CharField(max_length=1000)
+class DetailThumbnail(models.Model):
+    image_url = models.URLField(max_length=2000)
 
     class Meta:
-        db_table = 'product_thumnails'
+        db_table = 'detail_thumbnails'
 
-class Reveiw(models.Model):
-    # user            = models.ForeignKey(User, on_delete = models.CASCADE)
+class Review(models.Model):
+    user          = models.ForeignKey('users.User', on_delete = models.CASCADE)
     product_color = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
     title         = models.CharField(max_length=100)
     content       = models.CharField(max_length=1000)
-    image_url     = models.CharField(max_length=1000)
+    image_url     = models.URLField(max_length=1000)
     
     class Meta:
         db_table = 'reviews'
-
