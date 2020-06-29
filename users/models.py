@@ -15,7 +15,7 @@ class User(models.Model):
         db_table = 'users'
 
 class UserProductColor(models.Model):
-    like          = models.IntegerField(default = 1)
+    is_like       = models.BooleanField(default = True)
     user          = models.ForeignKey('User', on_delete = models.CASCADE)
     product_color = models.ForeignKey('product_app.ProductColor', on_delete = models.CASCADE)
 
