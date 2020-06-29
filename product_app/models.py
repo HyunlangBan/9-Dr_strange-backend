@@ -96,8 +96,8 @@ class ProductColor(models.Model):
     product          = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
     product_number   = models.IntegerField(unique = True)
     user             = models.ManyToManyField('users.User', through='Review')
-    detail_thumbnail = models.ManyToManyField('DetailThumbnail', through='ProductColorDetailThumbnail')
-    discount_price   = models.DecimalField(max_digits = 12, decimal_places = 2, null = True, blank = True)
+    detail_thumbnail = models.URLField(max_length = 2000)
+    discount_price   = models.DecimalField(max_digits = 12, decimal_places = 0, null = True, blank = True)
 
     class Meta:
         db_table = 'product_colors'
@@ -126,19 +126,6 @@ class ProductImage(models.Model):
     
     class Meta:
         db_table = 'product_images'
-
-class ProductColorDetailThumbnail(models.Model):
-    product_color    = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
-    detail_thumbnail = models.ForeignKey('DetailThumbnail', on_delete = models.SET_NULL, null = True)
-
-    class Meta:
-        db_table = 'product_colors_detail_thumbnails'
-        
-class DetailThumbnail(models.Model):
-    image_url = models.URLField(max_length=2000)
-
-    class Meta:
-        db_table = 'detail_thumbnails'
 
 class Review(models.Model):
     user          = models.ForeignKey('users.User', on_delete = models.CASCADE)
