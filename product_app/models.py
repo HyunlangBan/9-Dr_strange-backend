@@ -38,7 +38,7 @@ class SubCategory(models.Model):
 
 class SubCategoryProduct(models.Model):
     subcategory = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
-    product = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
+    product     = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
 
     class Meta:
         db_table = 'sub_category_products'
@@ -92,12 +92,12 @@ class Color(models.Model):
         return self.name
 
 class ProductColor(models.Model):
-    color          = models.ForeignKey('Color', on_delete = models.SET_NULL, null = True)
-    product        = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
-    product_number = models.IntegerField(unique = True)
-    user           = models.ManyToManyField('users.User', through='Review')
+    color            = models.ForeignKey('Color', on_delete = models.SET_NULL, null = True)
+    product          = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
+    product_number   = models.IntegerField(unique = True)
+    user             = models.ManyToManyField('users.User', through='Review')
     detail_thumbnail = models.ManyToManyField('DetailThumbnail', through='ProductColorDetailThumbnail')
-    discount_price = models.DecimalField(max_digits = 12, decimal_places = 2, null = True, blank = True)
+    discount_price   = models.DecimalField(max_digits = 12, decimal_places = 2, null = True, blank = True)
 
     class Meta:
         db_table = 'product_colors'
