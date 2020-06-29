@@ -20,6 +20,7 @@ from users.models import User
 class SignUpView(View):
     def post(self, request):
         data = json.loads(request.body)
+        
         try:
             validate_email(data['email'])
             if User.objects.filter(nickname = data['nickname']).exists():
@@ -45,20 +46,22 @@ class SignUpView(View):
         except ValidationError:
             return JsonResponse({'message' : 'INVALID_EMAIL'}, status = 400)
 
-        except KeyError as e:
-            return JsonResponse({'message' : str(e) + ' is right key name.'}, status = 400)
+        except KeyError:
+            return JsonResponse({'message' : 'INVALID_KEY'}, status = 400)
 
 class SignInView(View):
     def post(self, request):
         data = json.loads(request.body)
+
         try:
             if User.objects.filter(nickname = data['nickname']).exists():
-                users = User.objects.get(nickname = data['nickname'])
+                user = User.objects.get(nickname = data['nickname'])
+
                 if bcrypt.checkpw(data['password'].encode('utf-8'), users.password.encode('utf-8')):
-                    token = jwt.encode({'users_id' : users.id}, SECRET_KEY, algorithm = ALGORITHM)
+                    token = jwt.encode({'user_id' : user.id}, SECRET_KEY, algorithm = ALGORITHM)
                     return JsonResponse({'access_token':token.decode('utf-8')}, status = 200)
 
                 return HttpResponse(status = 401)
                 
-        except KeyError as e:
-            return JsonResponse({'message' : str(e) + ' is right key name.'}, status = 400)
+        except KeyError:
+            return JsonResponse({'message' : 'INVALID_KEY'}, status = 400)
