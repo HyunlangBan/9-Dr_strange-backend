@@ -39,6 +39,7 @@ class SubCategory(models.Model):
 class SubCategoryProduct(models.Model):
     subcategory = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
     product = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
+
     class Meta:
         db_table = 'sub_category_products'
 
