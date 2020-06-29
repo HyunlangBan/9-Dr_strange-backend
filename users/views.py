@@ -3,7 +3,6 @@ import jwt
 import re
 import bcrypt
 
-from django.shortcuts import render
 from django.views import View
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
