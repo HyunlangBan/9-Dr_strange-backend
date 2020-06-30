@@ -133,6 +133,7 @@ class Review(models.Model):
     title         = models.CharField(max_length=100)
     content       = models.CharField(max_length=1000)
     image_url     = models.URLField(max_length=1000)
+    stars         = models.IntegerField()
     
     class Meta:
         db_table = 'reviews'
