@@ -69,17 +69,20 @@ class ProductDetailView(View):
             review_dict['rating'] = r.stars
             star_list.append(r.stars)
             review_dict['content'] =r.content
-            review_dict['size'] = r.order.size
+            review_dict['size'] = r.order.cart_set.first().size
             review_info.append(review_dict)
        
         # avg_rate
         try:
             average_rate = sum(star_list)/(review_count*1.0)
+            
         except ZeroDivisionError:
             average_rate = 0
         # like
         likes = UserProductColor.objects.select_related('product_color')
         all_like = likes.filter(product_color__product_number = p_num).count()
+
+        fake_like = 600
 
         result = {
                 "productName": product_name,
@@ -91,9 +94,10 @@ class ProductDetailView(View):
                 "material": material,
                 "country": country,
                 "reviewInfo": review_info,
-                "averageRate": average_rate,
+                "averageRate": '%.1f' % average_rate,
                 "reviewCount": review_count,
-                "like": all_like,
+                "like": all_like + fake_like,
                 }
         
         return JsonResponse({'productDetailInfo':result}, status=200)
+
