@@ -31,14 +31,17 @@ from cart_app.models        import (
 )
 
 class OrderView(View):
-    PENDING = 1
-    DEFAULT_LIKES = 600
-
     @login_check
     def post(self, request):
+        PENDING = 1
         try:
             user_id                = request.user.id
             data                   = json.loads(request.body)
+            product_number         = data['productNum']
+            total_price            = data['currentOrigin']
+            total_sale_price       = data['currentSale']
+            quantity               = data['currentQuantity']
+            size                   = data['currentSize']
             product                = ProductColor.objects.prefetch_related(
                                     'product__color_set'
                                     ).prefetch_related(
@@ -48,11 +51,6 @@ class OrderView(View):
             product_id             = product.product.id
             color_name             = product.color.name
             product_image          = product.detailimage_set.first().image_url
-            product_number         = data['productNum']
-            total_price            = data['currentOrigin']
-            total_sale_price       = data['currentSale']
-            quantity               = data['currentQuantity']
-            size                   = data['currentSize']
             total_discounted_price = total_price - total_sale_price
             final_price            = total_price - total_discounted_price
           
@@ -89,6 +87,8 @@ class OrderView(View):
     @login_check
     def get(self, request):
         user_id = request.user.id
+        PENDING = 1
+        DEFAULT_LIKES = 600
         try:
             order_id     = Order.objects.get(user_id = user_id, order_status_id = PENDING)
             cart_items   = Cart.objects.prefetch_related(
