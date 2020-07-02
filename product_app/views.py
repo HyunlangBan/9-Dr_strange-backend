@@ -51,7 +51,6 @@ class ProductDetailView(View):
             else:
                 size_soldout[i] = False
         
-        
         # images
         detail_product = ProductColor.objects.prefetch_related('detailimage_set', 'product').get(product_number= p_num)
         all_images = detail_product.detailimage_set.all()
@@ -117,3 +116,24 @@ class ProductDetailView(View):
         
         return JsonResponse({'productDetailInfo':result}, status=200)
 
+class SearchView(View):
+    def get(self, request):
+        search_term = request.GET.get('search_term', None)
+        DEFAULT_LIKES = 600
+        if search_term:
+            products = ProductColor.objects.select_related('product')
+            search_result = products.filter(product__name__contains=search_term)
+
+            products = [
+            {
+                'productNum'    : single_product.product_number,
+                'productName'   : single_product.product.name,
+                'like'          : DEFAULT_LIKES+single_product.userproductcolor_set.count(),
+                'color'         : single_product.color.name,
+                'originPrice'   : single_product.product.price,
+                'salePrice'     : single_product.discount_price,
+                'productImg'    : [img.image_url for img in single_product.productimage_set.all()]
+            } for single_product in search_result]
+            return JsonResponse({'products' : products}, status = 200)
+        else:
+            return JsonResponse({'message': "No results."}, status = 200)
