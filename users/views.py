@@ -65,3 +65,9 @@ class SignInView(View):
                 
         except KeyError:
             return JsonResponse({'message' : 'INVALID_KEY'}, status = 400)
+
+class MyPageView(View):
+    @login_check
+    def get(self, request):
+        user = request.user
+        return JsonResponse({'user_name': user.name})
