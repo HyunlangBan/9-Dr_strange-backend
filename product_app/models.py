@@ -2,9 +2,6 @@ from django.db import models
 
 class Menu(models.Model):
     name = models.CharField(max_length = 100)
-    
-    def __str__(self):
-        return self.name
 
     class Meta:
         db_table = 'menus'
@@ -20,44 +17,33 @@ class Category(models.Model):
     name = models.CharField(max_length = 100)
     menu = models.ManyToManyField('Menu', through = 'MenuCategory')
     
-    def __str__(self):
-        return f'name: {self.name}, menus: {menu}'
-    
     class Meta:
         db_table = 'categories'
 
 class SubCategory(models.Model):
     name        = models.CharField(max_length = 100)
     category    = models.ForeignKey('Category', on_delete = models.SET_NULL, null = True)
-    
-    def __str__(self):
-        return f'name: {self.name}, categories: {self.category}'
+    menu_category = models.ManyToManyField('MenuCategory', through = 'MenuCategorySubCategory')
 
     class Meta:
         db_table = 'sub_categories'
 
-class SubCategoryProduct(models.Model):
-    subcategory = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
-    product     = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
-
+class MenuCategorySubCategory(models.Model):
+    menu_category = models.ForeignKey('MenuCategory', on_delete = models.SET_NULL, null = True)
+    sub_category  = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
+    
     class Meta:
-        db_table = 'sub_category_products'
+        db_table  = 'menu_category_sub_categories'
 
 class Size(models.Model):
     name            = models.CharField(max_length=20, default = 0, unique = True)
     product_color   = models.ManyToManyField('ProductColor', through = 'ProductColorSize')
-
-    def __str__(self):
-        return self.name
 
     class Meta:
         db_table = 'sizes'
 
 class Material(models.Model):
     name = models.CharField(max_length = 100, unique = True)
-
-    def __str__(self):
-        return self.name
 
     class Meta:
         db_table = 'materials'
@@ -73,10 +59,7 @@ class Product(models.Model):
     price          = models.DecimalField(max_digits = 12, decimal_places = 0)
     material       = models.ForeignKey('Material', on_delete = models.SET_NULL, null = True)
     country        = models.ForeignKey('Country', on_delete = models.SET_NULL, null = True)
-    sub_category   = models.ManyToManyField('SubCategory', through = 'SubCategoryProduct')
-    
-    def __str__(self):
-        return f'name: {self.name}, price: {self.price}'
+    menu_category_subcategory = models.ForeignKey('MenuCategorySubCategory', on_delete = models.SET_NULL, null = True)
     
     class Meta:
         db_table = 'products'
@@ -87,9 +70,6 @@ class Color(models.Model):
 
     class Meta:
         db_table = 'colors'
-
-    def __str__(self):
-        return self.name
 
 class ProductColor(models.Model):
     color            = models.ForeignKey('Color', on_delete = models.SET_NULL, null = True)
@@ -113,9 +93,6 @@ class ProductColorSize(models.Model):
 class DetailImage(models.Model):
     image_url       = models.URLField(max_length = 2000)
     product_color   = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
-    
-    def __self__(self):
-        return self.image_url
 
     class Meta:
         db_table = 'detail_images'
