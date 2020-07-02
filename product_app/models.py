@@ -21,8 +21,8 @@ class Category(models.Model):
         db_table = 'categories'
 
 class SubCategory(models.Model):
-    name        = models.CharField(max_length = 100)
-    category    = models.ForeignKey('Category', on_delete = models.SET_NULL, null = True)
+    name          = models.CharField(max_length = 100)
+    category      = models.ForeignKey('Category', on_delete = models.SET_NULL, null = True)
     menu_category = models.ManyToManyField('MenuCategory', through = 'MenuCategorySubCategory')
 
     class Meta:
@@ -37,7 +37,7 @@ class MenuCategorySubCategory(models.Model):
 
 class MenuCategorySubCategoryProduct(models.Model):
     menu_category_sub_category = models.ForeignKey('MenuCategorySubCategory', on_delete = models.SET_NULL, null = True)
-    product = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
+    product                    = models.ForeignKey('Product', on_delete = models.SET_NULL, null = True)
 
     class Meta:
         db_table = 'menu_category_sub_categories_products'
@@ -62,11 +62,11 @@ class Country(models.Model):
         db_table = 'countries'
 
 class Product(models.Model):
-    name                      = models.CharField(max_length = 200, unique = True)
-    price                     = models.DecimalField(max_digits = 12, decimal_places = 0)
-    material                  = models.ForeignKey('Material', on_delete = models.SET_NULL, null = True)
-    country                   = models.ForeignKey('Country', on_delete = models.SET_NULL, null = True)
-    menu_category_subcategory = models.ManyToManyField('MenuCategorySubCategory', through = 'MenuCategorySubCategoryProduct')
+    name                       = models.CharField(max_length = 200, unique = True)
+    price                      = models.DecimalField(max_digits = 12, decimal_places = 0)
+    material                   = models.ForeignKey('Material', on_delete = models.SET_NULL, null = True)
+    country                    = models.ForeignKey('Country', on_delete = models.SET_NULL, null = True)
+    menu_category_sub_category = models.ManyToManyField('MenuCategorySubCategory', through = 'MenuCategorySubCategoryProduct')
     
     class Meta:
         db_table = 'products'
