@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.views import View
 import json
 from django.http import JsonResponse
-from .models import *
-from users.models import *
+from .models import ProductColor, Product, Review
+from users.models import UserProductColor
+from django.db.models import Avg
 
 class ProductDetailView(View):
 
@@ -28,13 +29,12 @@ class ProductDetailView(View):
         
         
         # images
-        detail_images = ProductColor.objects.prefetch_related('detailimage_set').get(product_number= p_num)
-        all_images = detail_images.detailimage_set.all()
+        detail_product = ProductColor.objects.prefetch_related('detailimage_set', 'product').get(product_number= p_num)
+        all_images = detail_product.detailimage_set.all()
         images = [ image.image_url for image in all_images ]
         
         # thumbnails
-        related_products = ProductColor.objects.prefetch_related('product').get(product_number = p_num)
-        p_id = related_products.product.id
+        p_id = detail_product.product.id
         all_products = ProductColor.objects.filter(product_id = p_id)
         
         product_thumbnails = dict()
@@ -44,40 +44,32 @@ class ProductDetailView(View):
             product_thumbnails[p_n] = p_t
         
         # original, sale price
-        original_price = related_products.product.price
+        original_price = detail_product.product.price
         sale_price = ProductColor.objects.get(product_number = p_num).discount_price
         
-        # material
-        p_material = Product.objects.select_related('material').get(id = p_id)
-        material = p_material.material.name
-        
-        # country
-        p_country = Product.objects.select_related('country').get(id = p_id)
-        country = p_country.country.name
+        # material, country
+        prod = Product.objects.select_related('material', 'country').get(id = p_id)
+        material = prod.material.name
+        country = prod.country.name
         
         # review
         reviews = Review.objects.prefetch_related('product_color__order_set__user')
         review_all = reviews.filter(product_color__product_number=p_num)
         review_count = review_all.count()
-        star_list = []
-        review_info = []
-        for r in review_all:
-            review_dict = {}
-            review_dict['name'] = r.order.user.name
-            review_dict['title'] = r.title
-            review_dict['img'] = r.image_url
-            review_dict['rating'] = r.stars
-            star_list.append(r.stars)
-            review_dict['content'] =r.content
-            review_dict['size'] = r.order.cart_set.first().size
-            review_info.append(review_dict)
+        review_info = [
+                {
+                    'name': r.order.user.name,
+                    'title': r.title,
+                    'img': r.image_url,
+                    'rating': r.stars,
+                    'content': r.content,
+                    'size': r.order.cart_set.first().size
+                }
+        for r in review_all ]
        
         # avg_rate
-        try:
-            average_rate = sum(star_list)/(review_count*1.0)
-            
-        except ZeroDivisionError:
-            average_rate = 0
+        avg = review_all.aggregate(average_rate=Avg('stars'))
+        
         # like
         likes = UserProductColor.objects.select_related('product_color')
         all_like = likes.filter(product_color__product_number = p_num).count()
@@ -94,10 +86,9 @@ class ProductDetailView(View):
                 "material": material,
                 "country": country,
                 "reviewInfo": review_info,
-                "averageRate": '%.1f' % average_rate,
+                "averageRate": '%.1f' % avg['average_rate'],
                 "reviewCount": review_count,
                 "like": all_like + fake_like,
                 }
         
         return JsonResponse({'productDetailInfo':result}, status=200)
-
