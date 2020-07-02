@@ -127,19 +127,6 @@ class ProductImage(models.Model):
     class Meta:
         db_table = 'product_images'
 
-class ProductColorDetailThumbnail(models.Model):
-    product_color    = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
-    detail_thumbnail = models.ForeignKey('DetailThumbnail', on_delete = models.SET_NULL, null = True)
-
-    class Meta:
-        db_table = 'product_colors_detail_thumbnails'
-        
-class DetailThumbnail(models.Model):
-    image_url = models.URLField(max_length=2000)
-
-    class Meta:
-        db_table = 'detail_thumbnails'
-
 class Review(models.Model):
     user          = models.ForeignKey('users.User', on_delete = models.CASCADE)
     product_color = models.ForeignKey('ProductColor', on_delete = models.SET_NULL, null = True)
