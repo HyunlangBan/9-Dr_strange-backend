@@ -16,6 +16,7 @@ from dr_martens.settings import (
     ALGORITHM
 )
 from users.models import User
+from users.decorator import login_check
 
 class SignUpView(View):
     def post(self, request):
@@ -65,3 +66,9 @@ class SignInView(View):
                 
         except KeyError:
             return JsonResponse({'message' : 'INVALID_KEY'}, status = 400)
+
+class MyPageView(View):
+    @login_check
+    def get(self, request):
+        user = request.user
+        return JsonResponse({'user_name': user.name})
