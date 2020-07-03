@@ -16,6 +16,7 @@ from dr_martens.settings import (
     ALGORITHM
 )
 from users.models import User
+from users.decorator import login_check
 
 class SignUpView(View):
     def post(self, request):
