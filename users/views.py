@@ -59,7 +59,7 @@ class SignInView(View):
 
                 if bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8')):
                     token = jwt.encode({'user_id' : user.id}, SECRET_KEY, algorithm = ALGORITHM)
-                    return JsonResponse({'access_token':token.decode('utf-8')}, status = 200)
+                    return JsonResponse({'token':token.decode('utf-8')}, status = 200)
 
                 return HttpResponse(status = 401)
                 
