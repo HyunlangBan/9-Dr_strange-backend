@@ -101,6 +101,7 @@ class ProductDetailView(View):
 
         result = {
                 "productName": product_name,
+                "productNum": p_num,
                 "size": size_soldout,
                 "productImg": images,
                 "productThumbnail": product_thumbnails,
