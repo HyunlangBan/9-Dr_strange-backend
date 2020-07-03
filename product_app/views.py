@@ -14,7 +14,7 @@ from users.models       import UserProductColor
 class ProductListView(View):
     def get(self, request):
         data = json.loads(request.body)
-        p_num = data['productNum']
+        product_number = data['productNum']
         
         # product
         menu_name = request.GET.get('menu_name', None)
@@ -23,17 +23,15 @@ class ProductListView(View):
         DEFAULT_LIKES = 600
 
         # sizes
-        pcs = ProductColor.objects.prefetch_related('productcolorsize_set').get(product_number = p_num)
-        all_items = pcs.productcolorsize_set.all()
-        all_sizes = [ item.size.name for item in all_items ]
-        in_stock = all_items.filter(soldout = False)
-        in_stock_list = [ item.size.name for item in in_stock ]
+        product_color_size_objects = ProductColor.objects.prefetch_related('productcolorsize_set').get(product_number = product_number)
+        all_sizes = [ item.size.name for item in product_color_size_objects.productcolorsize_set.all() ]
+        in_stock_list = [ item.size.name for item in all_items.filter(soldout = False) ]
         size_soldout = dict()
-        for i in all_sizes:
-            if i not in in_stock_list:
-               size_soldout[i] = True
+        for size in all_sizes:
+            if size not in in_stock_list:
+               size_soldout[size] = True
             else:
-                size_soldout[i] = False
+                size_soldout[size] = False
 
         products = [
             {   
