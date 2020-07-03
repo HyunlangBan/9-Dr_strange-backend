@@ -24,7 +24,8 @@ class ProductListView(View):
 
         # sizes
         product_color_size_objects = ProductColor.objects.prefetch_related('productcolorsize_set').get(product_number = product_number)
-        all_sizes = [ item.size.name for item in product_color_size_objects.productcolorsize_set.all() ]
+        all_items = product_color_size_objects.productcolorsize_set.all()
+        all_sizes = [ item.size.name for item in all_items ]
         in_stock_list = [ item.size.name for item in all_items.filter(soldout = False) ]
         size_soldout = dict()
         for size in all_sizes:
