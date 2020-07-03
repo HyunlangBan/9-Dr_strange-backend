@@ -12,17 +12,17 @@ class BestSellerView(View):
         
         # 일부 상품
         product_smooth = ProductColor.objects.select_related('product').get(product_number = 10072600)
-        product_myles = ProductColor.objects.select_related('product').get(product_number = 23523001)
-        product_ryker = ProductColor.objects.select_related('product').get(product_number = 24515001)
+        product_myles  = ProductColor.objects.select_related('product').get(product_number = 23523001)
+        product_ryker  = ProductColor.objects.select_related('product').get(product_number = 24515001)
         
         # 일부 상품 제외한 전체 상품
         products_women = product_list.filter(
                 product__menu_category_sub_category__menu_category__menu__name = 'women').distinct()
-        products_men = product_list.filter(
+        products_men   = product_list.filter(
                 product__menu_category_sub_category__menu_category__menu__name = 'men').distinct()
-        all_items = product_list.all()
+        all_items      = product_list.all()
 
-        DEFAULT_LIKES = 600
+        DEFAULT_LIKES  = 600
        
         smooth = [
             {
