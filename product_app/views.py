@@ -1,4 +1,3 @@
-
 import json
 
 from django.views     import View
@@ -14,14 +13,32 @@ from users.models       import UserProductColor
 
 class ProductListView(View):
     def get(self, request):
+        data = json.loads(request.body)
+        product_number = data['productNum']
+        
+        # product
         menu_name = request.GET.get('menu_name', None)
         product_list = ProductColor.objects.prefetch_related('product__menu_category_sub_category__menu_category__menu')
         gender_product = product_list.filter(product__menu_category_sub_category__menu_category__menu__name = menu_name).distinct()
         DEFAULT_LIKES = 600
+
+        # sizes
+        product_color_size_objects = ProductColor.objects.prefetch_related('productcolorsize_set').get(product_number = product_number)
+        all_items = product_color_size_objects.productcolorsize_set.all()
+        all_sizes = [ item.size.name for item in all_items ]
+        in_stock_list = [ item.size.name for item in all_items.filter(soldout = False) ]
+        size_soldout = dict()
+        for size in all_sizes:
+            if size not in in_stock_list:
+               size_soldout[size] = True
+            else:
+                size_soldout[size] = False
+
         products = [
-            {
+            {   
                 'subCategoryId' : single_product.product.menu_category_sub_category.first().sub_category.id,
                 'productNum'    : single_product.product_number,
+                'size'          : size_soldout,
                 'productName'   : single_product.product.name,
                 'like'          : DEFAULT_LIKES+single_product.userproductcolor_set.count(),
                 'color'         : single_product.color.name,
