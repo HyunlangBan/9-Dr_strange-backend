@@ -7,6 +7,7 @@
 * [Back-end Github](https://github.com/wecode-bootcamp-korea/9-Dr_strange-backend)
 
 # Demo
+[![image](https://images.velog.io/images/dgk089/post/49c2e0d8-4901-434e-adee-c36d75883525/image.png)](https://youtu.be/x_OftNpGTy0)
 
 # Model
 
@@ -16,7 +17,10 @@
 
 * Python
 * Django
-* MYSQL
+* Beautifulsoup, Selenium
+* Bcrypt
+* JWT
+* MySQL
 * CORS headers
 * Git, Github
 
@@ -39,7 +43,7 @@
    
 * cart_app
    - 장바구니 구현
-      - 장바구니 추가 / 보기
+      - 장바구니 추가 / 보기 / 삭제
 
 # API Documentation
 
