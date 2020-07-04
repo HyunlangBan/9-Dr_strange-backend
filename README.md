@@ -7,7 +7,7 @@
 * [Back-end Github](https://github.com/wecode-bootcamp-korea/9-Dr_strange-backend)
 
 # Demo
-[![image](https://images.velog.io/images/dgk089/post/49c2e0d8-4901-434e-adee-c36d75883525/image.png)](https://youtu.be/x_OftNpGTy0)
+[![](https://images.velog.io/images/dgk089/post/a9f911a0-60f9-475b-9082-b44bb7712fa0/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7,%202020-07-04%2016-47-47.png)](https://youtu.be/x_OftNpGTy0)
 
 # Model
 
